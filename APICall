@@ -1,0 +1,74 @@
+import Foundation
+import Alamofire
+
+class APICall {
+    
+    class func UDataApiCalling(Api: String, method: HTTPMethod, parameter: Parameters?, header: HTTPHeaders?, completeonClosure: @escaping (Bool,AnyObject?) -> ()){
+        
+        AF.request(Api, method: method, parameters: parameter, encoding: URLEncoding.default, headers: header).authenticate(username: "indiatextilehub", password: "Y7y4[0S$v[6?11vtexttile").responseJSON { (responce) in
+            
+            switch responce.result {
+            case let .success(value):
+                completeonClosure(true,value as AnyObject)
+            case let .failure(error):
+                print(error.localizedDescription)
+                completeonClosure(false, error.localizedDescription as AnyObject)
+            }
+        }        
+    }
+    
+    class func UDataApiCallingStr(Api: String, method: HTTPMethod, parameter: Parameters?, header: HTTPHeaders?, completeonClosure: @escaping (Bool,AnyObject?) -> ()){
+        
+        AF.request(Api, method: method, parameters: parameter, encoding: URLEncoding.default, headers: header).authenticate(username: "indiatextilehub", password: "Y7y4[0S$v[6?11vtexttile").response { (responce) in
+            
+            switch responce.result {
+            case let .success(value):
+                if let data = value, let utf8Text = String(data: data, encoding: .utf8) {
+                    print("Data: \(utf8Text)")
+                }
+                completeonClosure(true,value as AnyObject)
+            case let .failure(error):
+                print(error.localizedDescription)
+                completeonClosure(false, error.localizedDescription as AnyObject)
+            }
+        }
+    }
+    
+    class func ApiCall(API: String,param: NSDictionary?,Method: String,completionClosure: @escaping (Bool?, AnyObject?) -> ()){
+        let url = URL(string: API)
+        var request = URLRequest(url: url!)
+        if(Method == POST){
+            request.httpMethod = POST
+        }else{
+            request.httpMethod = GET
+        }
+        
+        if(param != nil){
+            request.httpBody = try! JSONSerialization.data(withJSONObject: param!, options: .prettyPrinted)
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+        }
+        
+        URLSession.shared.dataTask(with:request) { (data, response, error) in
+            if error != nil {
+                print(error!)
+                completionClosure(false, nil)
+            } else {
+                do {
+                    let dataa = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
+                    //let decoder = JSONDecoder()
+                    let datab = dataa?.data(using: String.Encoding.utf8.rawValue)
+                    //let parsedDictionaryArray = try JSONSerialization.jsonObject(with: data!) as! [String:AnyObject]
+                    let datad = try JSONSerialization.jsonObject(with: datab!, options: .allowFragments) as! [String:AnyObject]
+                    print(datad)
+                    //print(parsedDictionaryArray)
+                    completionClosure(true, datad as AnyObject)
+                } catch let error as NSError {
+                    print(error)
+                    completionClosure(false, nil)
+                }
+            }
+            }.resume()
+    }
+    
+}
