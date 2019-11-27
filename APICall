@@ -5,7 +5,7 @@ class APICall {
     
     class func UDataApiCalling(Api: String, method: HTTPMethod, parameter: Parameters?, header: HTTPHeaders?, completeonClosure: @escaping (Bool,AnyObject?) -> ()){
         
-        AF.request(Api, method: method, parameters: parameter, encoding: URLEncoding.default, headers: header).authenticate(username: "indiatextilehub", password: "Y7y4[0S$v[6?11vtexttile").responseJSON { (responce) in
+        AF.request(Api, method: method, parameters: parameter, encoding: URLEncoding.default, headers: header).authenticate(username: "USERNAME", password: "PASWORD").responseJSON { (responce) in
             
             switch responce.result {
             case let .success(value):
@@ -19,7 +19,7 @@ class APICall {
     
     class func UDataApiCallingStr(Api: String, method: HTTPMethod, parameter: Parameters?, header: HTTPHeaders?, completeonClosure: @escaping (Bool,AnyObject?) -> ()){
         
-        AF.request(Api, method: method, parameters: parameter, encoding: URLEncoding.default, headers: header).authenticate(username: "indiatextilehub", password: "Y7y4[0S$v[6?11vtexttile").response { (responce) in
+        AF.request(Api, method: method, parameters: parameter, encoding: URLEncoding.default, headers: header).authenticate(username: "USERNAME", password: "PASSWORD").response { (responce) in
             
             switch responce.result {
             case let .success(value):
